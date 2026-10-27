@@ -1,0 +1,11 @@
+# The LOL kernel — licensing
+
+Kernel code contributed in this repository is licensed
+**GPL-2.0-only**, matching the Linux kernel. The
+[GNU GPL v2 text](https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt) applies
+to any kernel source, patch or configuration committed here.
+
+Upstream sources (the Linux kernel, Arch's `linux` package) keep their own
+copyright and license notices; this repository adds nothing on top of them.
+Documentation in this repository is licensed
+[CC0](https://creativecommons.org/publicdomain/zero/1.0/).
