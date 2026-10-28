@@ -45,8 +45,10 @@ options=(
   !debug
   !strip
 )
-_srcname=linux-${_archver%.arch*}
-_srctag=v${_archver%.arch*}-${_archver##*.arch}
+# Hardcoded for this pinned build — bump together with _archver each time
+# Arch releases. The two line up: linux-7.2.11.tar.xz, v7.2.11-arch1.
+_srcname=linux-7.2.11
+_srctag=v7.2.11-arch1
 source=(
   https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
   $_archurl/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
