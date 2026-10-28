@@ -39,6 +39,8 @@ fi
 
 echo "== 2. build (có thể 30–60 phút trên 16 thread) =="
 BUILD_USER="${SUDO_USER:-$(logname 2>/dev/null || printf 'xogfredia')}"
+echo "BUILD_USER=$BUILD_USER (uid $(id -u "$BUILD_USER" 2>/dev/null))"
+[[ "$(id -u "$BUILD_USER" 2>/dev/null)" = 0 ]] && { echo "FATAL: builduser là root — đào lỗi: SUDO_USER=$SUDO_USER logname=$(logname 2>&1)"; exit 1; }
 sudo GNUPGHOME=/home/xogfredia/.gnupg sh -c "cd '$REPO' && exec makechrootpkg -c -U '$BUILD_USER' -r '$CHROOT'"
 
 echo "== xong. sản phẩm:"
