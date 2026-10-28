@@ -4,13 +4,16 @@
 Two naming layers, kept in one place so the PKGBUILD and release notes
 cannot drift apart:
 
-  pkgver     6.17.4.arch1-1        Arch
-             6.17.4.arch1-1.tol1   first TOL build, .tolN bumps per change
-  uname -r   7.2.11-arch1-1-ilol   LOCALVERSION suffix, no .tolN — the
-                                    kernel build is the pkgver's job
+  pkgver     7.2.11.arch1          Arch's own pkgver line
+             7.2.11.arch1.tol1     first TOL build; .tolN bumps per change
+  pkgrel     1                     always 1 — the revision lives in pkgver
+  uname -r   7.2.11-arch1-1-ilol   fixed localversion mark, no .tolN
 
-See POLICY.md § Versioning. A rebuild that changes nothing gets no new
-.tolN; this module is the single place both strings are minted and read.
+makepkg constrains pkgrel to integer[.integer], which is why the .tolN
+revision rides in pkgver (the pattern linux-ck/linux-clear use), not in
+pkgrel. The .tolN never reaches uname -r on purpose: two rebuilds that
+only change packaging report the same kernel identity while the packages
+differ. See POLICY.md § Versioning.
 """
 
 from __future__ import annotations
@@ -20,12 +23,16 @@ import json
 import re
 import sys
 
-ARCH_RE = re.compile(
+PKGVER_RE = re.compile(
     r"^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)"
-    r"\.arch1-(?P<rel>\d+)(?P<tol>\.tol\d+)?$"
+    r"\.(?P<kernelid>arch\d+)"
+    r"(?P<tol>\.tol\d+)?(?P<rel>-(?P<relnum>\d+))?$"
 )
 
+# The pkgbase and localversion constants in one place.
+PKGBASE = "linux-ilol"
 LOCALVERSION = "-ilol"
+LOCALVERSION_FILE = "localversion.20-pkgname"
 
 
 class VersionError(ValueError):
@@ -33,18 +40,19 @@ class VersionError(ValueError):
 
 
 def parse(pkgver: str) -> dict[str, str]:
-    """Parse an Arch or TOL pkgver into its fields. Raises VersionError."""
-    m = ARCH_RE.match(pkgver)
+    """Parse an Arch or TOL pkgver (pkgver line, no pkgrel) into fields."""
+    m = PKGVER_RE.match(pkgver)
     if not m:
         raise VersionError(
-            f"not an arch1-style pkgver (optionally +.tolN): {pkgver!r}"
+            f"not an arch-style pkgver (optionally .tolN / -rel): {pkgver!r}"
         )
     return {
         "major": m["major"],
         "minor": m["minor"],
         "patch": m["patch"],
-        "rel": m["rel"],
+        "kernelid": m["kernelid"],
         "tol": m["tol"].lstrip(".") if m["tol"] else "",
+        "rel": m.group("relnum") or "",
     }
 
 
@@ -52,19 +60,22 @@ def bump_tol(pkgver: str) -> str:
     """Return pkgver with the .tolN revision advanced by one."""
     v = parse(pkgver)
     next_n = int(v["tol"][3:]) + 1 if v["tol"] else 1
-    base = f"{v['major']}.{v['minor']}.{v['patch']}.arch1-{v['rel']}"
+    base = (f"{v['major']}.{v['minor']}.{v['patch']}.{v['kernelid']}")
     return f"{base}.tol{next_n}"
 
 
-def uname_suffix(pkgver: str) -> str:
-    """The `uname -r` suffix: the arch part, then the fixed -ilol mark.
+def uname_suffix(pkgver: str, pkgrel: str = "1") -> str:
+    """The full version `uname -r` must show: `7.2.11-arch1-1-ilol`.
 
     The .tolN packaging revision does NOT appear in uname -r: two rebuilds
-    that only change packaging report the same kernel identity on purpose,
-    while the packages differ. See POLICY.md.
+    that only change packaging report the same kernel identity on purpose.
     """
     v = parse(pkgver)
-    return f"-arch1-{v['rel']}{LOCALVERSION}"
+    rel = v["rel"] or pkgrel
+    return (
+        f"{v['major']}.{v['minor']}.{v['patch']}"
+        f"-{v['kernelid']}-{rel}{LOCALVERSION}"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -78,6 +89,7 @@ def main(argv: list[str] | None = None) -> int:
     ):
         p = sub.add_parser(name, help=help_)
         p.add_argument("pkgver")
+        p.add_argument("--rel", default="1", help="pkgrel, default 1")
     args = ap.parse_args(argv)
     try:
         if args.cmd == "bump":
@@ -85,7 +97,7 @@ def main(argv: list[str] | None = None) -> int:
         elif args.cmd == "parse":
             out = parse(args.pkgver)
         else:
-            out = uname_suffix(args.pkgver)
+            out = uname_suffix(args.pkgver, args.rel)
     except VersionError as e:
         print(f"pkver: {e}", file=sys.stderr)
         return 1

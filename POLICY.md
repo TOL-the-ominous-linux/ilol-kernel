@@ -18,13 +18,26 @@ This file is the contract. A release that violates it is a bug, not a feature.
 
 ## Versioning
 
-`pkgver` follows Arch's kernel package, plus a TOL revision:
+makepkg constrains `pkgrel` to `integer[.integer]`, so the TOL revision
+rides in `pkgver` (the same pattern as linux-ck/linux-clear):
 
 ```
-6.17.4.arch1-1        Arch
-6.17.4.arch1-1.tol1   first TOL build of that Arch kernel
-6.17.4.arch1-1.tol2   second TOL build: patch set or config changed
+7.2.11.arch1          Arch's pkgver
+7.2.11.arch1.tol1     first TOL build; pkgrel stays 1
+7.2.11.arch1.tol2     second TOL build: patch set or config changed
 ```
+
+`pkgver` never leaks into `uname -r`. The kernel reports
+
+```
+7.2.11-arch1-1-ilol
+```
+
+(`-arch1` from Arch's stable patch, `-1` from the kernel's own
+`localversion.10-pkgrel`, `-ilol` from `localversion.20-pkgname`). Two
+rebuilds that change only packaging share one kernel identity on purpose;
+the packages differ, the running kernel's name does not. `tools/pkver.py`
+is the single authority for both strings, with 16 tests.
 
 A rebuild that changes nothing does not get a new revision. A change to the
 patch set does, even if the Arch `pkgver` is the same.
