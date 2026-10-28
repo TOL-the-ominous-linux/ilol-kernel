@@ -9,6 +9,20 @@ may install when the stock Arch kernel is not enough for a machine.
 Examples before versions exist so that mistakes get made *before* an upstream
 kernel has to carry them.
 
+## Where the code lives
+
+| Directory | Content |
+|---|---|
+| [`patches/`](patches/) | the patch set — every diff has a source, a test and one line of justification |
+| [`tools/`](tools/) | Python packaging helpers (version naming is the first one) — userspace only |
+| [`samples/`](samples/) | out-of-tree build proofs: a C module and a Rust module, and why there is no C++ one |
+
+The kernel itself is C — that is what the Linux kernel is — with Rust as the
+upstream-supported second language (`CONFIG_RUST=y` ships enabled in Arch's
+official kernel, verified on 7.2.11.arch1-1). Python runs the packaging
+tooling. Sample modules are how the header package is proven alive before
+the first release.
+
 ## What it is
 
 `iLOL kernel` is **Arch-based**: it tracks Arch's `linux` package, keeps Arch's
