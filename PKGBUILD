@@ -10,6 +10,8 @@ pkgbase=linux-ilol
 # The Arch kernel line this build tracks (POLICY.md § Versioning).
 # .tolN rides on top of it and never leaks into the source URLs or uname.
 _archver=7.2.11.arch1
+# The Arch fork that ships the stable patch (-arch1) as a release asset.
+_archurl='https://github.com/archlinux/linux'
 pkgver=${_archver}.tol1
 pkgrel=1
 pkgdesc='iLOL kernel — tracks Arch linux, adds the -ilol name and nothing else yet'
@@ -47,7 +49,7 @@ _srcname=linux-${_archver%.arch*}
 _srctag=v${_archver%.arch*}-${_archver##*.arch}
 source=(
   https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
-  $url/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
+  $_archurl/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
 )
 source_x86_64=(config.x86_64)
 validpgpkeys=(
