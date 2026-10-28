@@ -16,10 +16,15 @@ CHROOT=/var/lib/archbuild/tolroot
 echo "== 0. GPG keys của kernel.org (một lần, idempotent) =="
 GNUPG_HOME=/home/xogfredia/.gnupg
 KEYS="ABAF11C65A2970B130ABE3C479BE3E4300411886 647F28654894E3BD457199BE38DBBDC86092693E 83BC8889351B5DEBBB68416EB8AC08600F108CDF"
+# Keyserver (ubuntu/keys.openpgp) từ chối hoặc strip UID với key của Linus/Greg —
+# nguồn chính thức là pgpkeys repo của kernel.org (korg.docs.kernel.org/pgpkeys.html).
+sudo -u xogfredia git clone -q https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git /tmp/opencode/pgpkeys 2>/dev/null || \
+  sudo -u xogfredia git -C /tmp/opencode/pgpkeys pull -q
 for k in $KEYS; do
   if ! sudo -u xogfredia env GNUPGHOME="$GNUPG_HOME" gpg --list-keys "$k" >/dev/null 2>&1; then
     echo "import $k…"
-    sudo -u xogfredia env GNUPGHOME="$GNUPG_HOME" gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$k"
+    sudo -u xogfredia env GNUPGHOME="$GNUPG_HOME" gpg --import "/tmp/opencode/pgpkeys/keys/${k:(-16)}.asc" || \
+      echo "WARN: $k vẫn chưa vào được keyring — kiểm Encoder keyserver fallback"
   fi
 done
 echo "3 keys sẵn trong keyring của xogfredia"
