@@ -1,2 +1,10 @@
 __pycache__/
 *.pyc
+**.cmd
+.module-common.o
+Module.symvers
+modules.order
+*.ko
+*.mod
+*.mod.c
+*.o
