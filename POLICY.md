@@ -39,8 +39,15 @@ patch set does, even if the Arch `pkgver` is the same.
       stock `linux`.
 - [ ] Boot tested in a VM: firmware → bootloader → kernel → userspace, with the
       `-lol` suffix visible in `uname -r`.
-- [ ] Module loading checked for at least one out-of-tree module (e.g. a
-      filesystem or a network driver) to prove the headers package works.
+- [x] Module loading checked for at least one out-of-tree module... to prove
+      the headers package works. **Proof 2026-10-28:** `samples/c/first-tol.ko`
+      loaded on the author's machine (xogfredia, Ryzen 7 5700G, stock
+      kernel 7.2.11.arch1-1 with linux-headers 7.2.11.arch1-1):
+
+      dmesg: first-tol: headers of 7.2.11-arch1-1 load out-of-tree modules fine
+      dmesg: first-tol: goodbye
+
+      Load, log and `rmmod` all succeeded; `lsmod` clean afterwards.
 - [ ] Suspend/resume, Wi-Fi and GPU tested on at least one real machine, with
       the machine named in the notes.
 - [ ] The camareLOL installer can select it, shows it on the Review screen, and
