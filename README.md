@@ -1,4 +1,4 @@
-# LOL kernel
+# iLOL kernel
 
 **Status: planned. Nothing is built, packaged or shipped yet.**
 
@@ -11,17 +11,17 @@ kernel has to carry them.
 
 ## What it is
 
-`LOL kernel` is **Arch-based**: it tracks Arch's `linux` package, keeps Arch's
+`iLOL kernel` is **Arch-based**: it tracks Arch's `linux` package, keeps Arch's
 configuration and patch set, and adds a small, documented set of changes. It is
 delivered as normal Arch packages:
 
 | Package | Provides |
 |---|---|
-| `linux-lol` | the kernel image, modules and firmware hooks |
-| `linux-lol-headers` | headers for out-of-tree modules |
+| `linux-ilol` | the kernel image, modules and firmware hooks |
+| `linux-ilol-headers` | headers for out-of-tree modules |
 
 `uname -r` must show the suffix, so a support request can tell which kernel is
-running: `6.x.y-arch1-1-lol`.
+running: `6.x.y-arch1-1-ilol`.
 
 ## What it is not
 
@@ -29,7 +29,7 @@ running: `6.x.y-arch1-1-lol`.
   choice inside that install, not a separate OS.
 - **Not a fork with its own subsystem.** TOL does not maintain a Linux fork.
   Patches come from upstream, from Arch, or from a named source with a link.
-- **Not the default.** Stock `linux` stays the default. `linux-lol` is opt-in,
+- **Not the default.** Stock `linux` stays the default. `linux-ilol` is opt-in,
   chosen explicitly, and the installer must say so on the Review screen.
 - **Not a performance meme.** No "gaming" sysctl bundles, no scheduler swaps
   without a measured reason, no patch that only exists to make a benchmark
@@ -47,7 +47,7 @@ test. A wishlist is not a reason to ship a kernel.
 
 [POLICY.md](POLICY.md) is the contract: patch rules, versioning, and the
 checklist every box of which must be ticked before the first release. Until
-then the honest description of `linux-lol` is **"planned"**.
+then the honest description of `linux-ilol` is **"planned"**.
 
 ```
 patches/         empty by design, see POLICY.md — an anonymous diff is a bug
@@ -55,7 +55,7 @@ patches/         empty by design, see POLICY.md — an anonymous diff is a bug
 
 ## Relationship to camareLOL
 
-camareLOL does not need the LOL kernel to work. If it is ever offered in the
+camareLOL does not need the iLOL kernel to work. If it is ever offered in the
 installer it must be **off by default**, **named on the Review screen**,
 **reversible** (the notes state the command that restores stock `linux`), and
 **tested by the same acceptance harness** as the rest of the install. If those

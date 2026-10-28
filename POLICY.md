@@ -1,4 +1,4 @@
-# LOL kernel — policy
+# iLOL kernel — policy
 
 This file is the contract. A release that violates it is a bug, not a feature.
 
@@ -35,7 +35,7 @@ patch set does, even if the Arch `pkgver` is the same.
 - [ ] A written patch list (`patches/`) with one line of justification per
       patch.
 - [ ] The package builds in a clean chroot, not on the author's desktop.
-- [ ] `linux-lol` and `linux-lol-headers` install and remove cleanly alongside
+- [ ] `linux-ilol` and `linux-ilol-headers` install and remove cleanly alongside
       stock `linux`.
 - [ ] Boot tested in a VM: firmware → bootloader → kernel → userspace, with the
       `-lol` suffix visible in `uname -r`.
@@ -48,7 +48,7 @@ patch set does, even if the Arch `pkgver` is the same.
 - [ ] The release notes say which Arch kernel it tracks and how to go back to
       stock `linux`.
 
-Until every box is ticked, the honest description of `linux-lol` is "planned".
+Until every box is ticked, the honest description of `linux-ilol` is "planned".
 
 ## Security
 
