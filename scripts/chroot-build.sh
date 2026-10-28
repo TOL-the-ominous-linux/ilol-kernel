@@ -22,7 +22,8 @@ else
 fi
 
 echo "== 2. build (có thể 30–60 phút trên 16 thread) =="
-sudo makechrootpkg -c -r "$CHROOT" "$REPO"
+cd "$REPO"
+sudo makechrootpkg -c -r "$CHROOT"
 
 echo "== xong. sản phẩm:"
 ls -la "$REPO"/linux-ilol*.pkg.tar.zst 2>/dev/null
