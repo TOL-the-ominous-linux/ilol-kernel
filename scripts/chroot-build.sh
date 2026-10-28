@@ -15,7 +15,7 @@ CHROOT=/var/lib/archbuild/tolroot
 
 echo "== 1. chroot root =="
 if [[ ! -d $CHROOT ]]; then
-  sudo mkdir -p "$(dirname "$CHROOT")"
+  sudo mkdir -p "$CHROOT"
   sudo mkarchroot "$CHROOT/root" base-devel
 else
   sudo arch-nspawn "$CHROOT/root" pacman -Syu --noconfirm
