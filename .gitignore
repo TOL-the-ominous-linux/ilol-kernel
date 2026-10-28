@@ -8,3 +8,5 @@ modules.order
 *.mod
 *.mod.c
 *.o
+
+**.d
