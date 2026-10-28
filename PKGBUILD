@@ -7,7 +7,10 @@
 # Build target: a clean chroot, per POLICY.md — not the author's desktop.
 
 pkgbase=linux-ilol
-pkgver=7.2.11.arch1.tol1
+# The Arch kernel line this build tracks (POLICY.md § Versioning).
+# .tolN rides on top of it and never leaks into the source URLs or uname.
+_archver=7.2.11.arch1
+pkgver=${_archver}.tol1
 pkgrel=1
 pkgdesc='iLOL kernel — tracks Arch linux, adds the -ilol name and nothing else yet'
 url='https://github.com/TOL-the-ominous-linux/ilol-kernel'
@@ -40,8 +43,8 @@ options=(
   !debug
   !strip
 )
-_srcname=linux-${pkgver%.*}
-_srctag=v${pkgver%.*}-${pkgver##*.}
+_srcname=linux-${_archver%.arch*}
+_srctag=v${_archver%.arch*}-${_archver##*.arch}
 source=(
   https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
   $url/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
