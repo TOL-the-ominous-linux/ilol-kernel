@@ -43,7 +43,10 @@ case "${SUDO_USER:-}" in ""|root) ;; *) [[ -z $BUILD_USER || $BUILD_USER = root 
 [[ -z $BUILD_USER || $BUILD_USER = root ]] && BUILD_USER=xogfredia
 echo "BUILD_USER=$BUILD_USER (uid $(id -u "$BUILD_USER" 2>/dev/null))"
 [[ "$(id -u "$BUILD_USER" 2>/dev/null)" = 0 ]] && { echo "FATAL: builduser là root — đào lỗi: SUDO_USER=$SUDO_USER logname=$(logname 2>&1)"; exit 1; }
-sudo GNUPGHOME=/home/xogfredia/.gnupg sh -c "cd '$REPO' && exec makechrootpkg -c -U '$BUILD_USER' -r '$CHROOT'"
+# makepkg.conf of Arch leaves MAKEFLAGS commented — without this the kernel
+# builds at -j1 and takes hours. Use every core when asked to.
+sudo --preserve-env=GNUPGHOME,NPROC,MAKEFLAGS NPROC="$(nproc)" MAKEFLAGS="-j$(nproc)" \
+  sh -c "cd '$REPO' && exec makechrootpkg -c -U '$BUILD_USER' -r '$CHROOT'"
 
 echo "== xong. sản phẩm:"
 ls -la "$REPO"/linux-ilol*.pkg.tar.zst 2>/dev/null
